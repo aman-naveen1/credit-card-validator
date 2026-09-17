@@ -1,7 +1,6 @@
 """Credit card number validation using the Luhn (Mod-10) algorithm."""
 
 import re
-from typing import Optional
 
 
 def normalize_card_number(card_number: str) -> str:
@@ -49,6 +48,16 @@ def luhn_check(card_number: str) -> bool:
     return total % 10 == 0
 
 
+def mask_card_number(card_number: str) -> str:
+    """Mask a card number, retaining only its last four digits."""
+    number = normalize_card_number(card_number)
+    if not number.isdigit():
+        return "Invalid input"
+    if len(number) <= 4:
+        return "*" * len(number)
+    return "*" * (len(number) - 4) + number[-4:]
+
+
 def validate_card(card_number: str) -> dict:
     """Return structured validation information without exposing the full number."""
     normalized = normalize_card_number(card_number)
@@ -62,16 +71,6 @@ def validate_card(card_number: str) -> dict:
         "luhn_passed": valid_luhn,
         "masked": mask_card_number(normalized) if valid_format else "Invalid input",
     }
-
-
-def mask_card_number(card_number: str) -> str:
-    """Mask a card number, retaining only its last four digits."""
-    number = normalize_card_number(card_number)
-    if not number.isdigit():
-        return "Invalid input"
-    if len(number) <= 4:
-        return "*" * len(number)
-    return "*" * (len(number) - 4) + number[-4:]
 
 
 if __name__ == "__main__":
